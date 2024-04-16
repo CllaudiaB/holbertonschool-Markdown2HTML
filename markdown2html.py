@@ -13,10 +13,7 @@ def main():
               'README.html', file=sys.stderr)
         sys.exit(1)
 
-    if ".md" in sys.argv[1]:
-        path = './'
-        check_file = os.path.isfile(path + sys.argv[1])
-        if not check_file:
+    if os.path.isfile(sys.argv[1]) == False:
             print(f"Missing {sys.argv[1]}", file=sys.stderr)
             sys.exit(1)
 
