@@ -18,21 +18,24 @@ def check():
         return sys.exit(1)
 
 
-def parsing_headings(markdown):
+def parsing_headings(line):
     """Parsing headings Markdown for generating HTML"""
-    file_markdown = open("README.md", "r")
-    file_html = open("README.html", "w")
 
-    for line in file_markdown:
-        count_hashtag = line.count("#")
-        remove_hashtag = line.strip(" #")
+    count_hashtag = line.count("#")
+    remove_hashtag = line.strip(" #")
 
-        print(f"<h{count_hashtag}>{remove_hashtag}</h{count_hashtag}>")
+    return f"<h{count_hashtag}>{remove_hashtag}</h{count_hashtag}>"
 
+
+def convert_md_to_html(markdown_file, html_file):
+    with open(markdown_file, "r") as md, open(html_file, "w") as html:
+        for line in md:
+            line = parsing_headings(line)
+            html.write(line)
 
 def main():
     check()
-    parsing_headings(sys.argv[1])
+    convert_md_to_html(sys.argv[1], sys.argv[2])
 
 
 if __name__ == "__main__":
