@@ -22,8 +22,9 @@ def parsing_headings(line):
     """Parsing headings Markdown for generating HTML"""
     count_hashtag = line.count("#")
     remove_hashtag = line.lstrip("#").strip()
+    print(remove_hashtag)
 
-    return f"<h{count_hashtag}>{remove_hashtag}</h{count_hashtag}>"
+    return f"<h{count_hashtag}>{remove_hashtag}</h{count_hashtag}>\n"
 
 
 def convert_md_to_html(markdown_file, html_file):
