@@ -18,8 +18,21 @@ def check():
         return sys.exit(1)
 
 
+def parsing_headings(markdown):
+    """Parsing headings Markdown for generating HTML"""
+    file_markdown = open("README.md", "r")
+    file_html = open("README.html", "w")
+
+    for line in file_markdown:
+        count_hashtag = line.count("#")
+        remove_hashtag = line.strip(" #")
+
+        print(f"<h{count_hashtag}>{remove_hashtag}</h{count_hashtag}>")
+
+
 def main():
     check()
+    parsing_headings(sys.argv[1])
 
 
 if __name__ == "__main__":
