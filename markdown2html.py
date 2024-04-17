@@ -40,6 +40,7 @@ def convert_md_to_html(markdown_file, html_file):
 def main():
     check()
     convert_md_to_html(sys.argv[1], sys.argv[2])
+    sys.exit(0)
 
 
 if __name__ == "__main__":
