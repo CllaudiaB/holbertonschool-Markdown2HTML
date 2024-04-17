@@ -11,11 +11,11 @@ def check():
     if len(sys.argv) <= 2:
         print('Usage: ./markdown2html.py README.md '
               'README.html', file=sys.stderr)
-        sys.exit(1)
+        return sys.exit(1)
 
     if os.path.isfile(sys.argv[1]) is False:
         print(f"Missing {sys.argv[1]}", file=sys.stderr)
-        sys.exit(1)
+        return sys.exit(1)
 
 
 def parsing_headings(line):
@@ -27,6 +27,7 @@ def parsing_headings(line):
         remove_hashtag = line.lstrip("#").strip()
 
         return f"<h{count_hashtag}>{remove_hashtag}</h{count_hashtag}>\n"
+    return line
 
 
 def convert_md_to_html(markdown_file, html_file):
