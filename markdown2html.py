@@ -11,11 +11,11 @@ def check():
     if len(sys.argv) <= 2:
         print('Usage: ./markdown2html.py README.md '
               'README.html', file=sys.stderr)
-        return sys.exit(1)
+        sys.exit(1)
 
     if os.path.isfile(sys.argv[1]) is False:
         print(f"Missing {sys.argv[1]}", file=sys.stderr)
-        return sys.exit(1)
+        sys.exit(1)
 
 
 def parsing_headings(line):
