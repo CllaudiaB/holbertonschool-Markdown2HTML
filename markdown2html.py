@@ -20,18 +20,19 @@ def check():
 
 def parsing_headings(line):
     """Parsing headings Markdown for generating HTML"""
-
     count_hashtag = line.count("#")
-    remove_hashtag = line.strip(" #")
+    remove_hashtag = line.lstrip("#").strip()
 
     return f"<h{count_hashtag}>{remove_hashtag}</h{count_hashtag}>"
 
 
 def convert_md_to_html(markdown_file, html_file):
+    """Convert Markdown to HTML"""
     with open(markdown_file, "r") as md, open(html_file, "w") as html:
         for line in md:
             line = parsing_headings(line)
             html.write(line)
+
 
 def main():
     check()
