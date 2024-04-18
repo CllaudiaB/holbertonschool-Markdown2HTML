@@ -4,6 +4,7 @@
 
 import sys
 import os.path
+import hashlib
 
 
 def check():
@@ -30,18 +31,34 @@ def parsing_headings(line):
     return line
 
 
+"""def convert_md5_lowercase(line):
+    if "[" and "]" in line:
+        remove_brackets = line.replace("[", "").replace("]", "")
+        string_hashed = hashlib.md5(remove_brackets.encode("utf-8")).hexdigest().lower()
+        
+        return f"<p>{string_hashed}</p>"""
+
+
+def remove_all_c(line):
+    string = line.replace("(", "").replace(")", "")
+    if "c" or "C" in string:
+        return f"<p>{string.replace('c', '').replace('C', '')}</p>"
+ 
+
 def convert_md_to_html(markdown_file, html_file):
     """Convert Markdown to HTML"""
     with open(markdown_file, "r") as md, open(html_file, "w+") as html:
         for line in md:
-            line = parsing_headings(line)
+            if "#" in line:
+                line = parsing_headings(line)
+            elif "(" in line:
+                line = remove_all_c(line)
             html.write(line)
 
 
 def main():
     check()
     convert_md_to_html(sys.argv[1], sys.argv[2])
-
 
 if __name__ == "__main__":
     main()
