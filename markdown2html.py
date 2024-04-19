@@ -42,7 +42,7 @@ def convert_md5_lowercase(line):
     string_hashed = hashlib.md5(remove_brackets.encode("utf-8"))
     string_hashed = string_hashed.hexdigest().lower()
 
-    return f"<p>{line[0:index_brackets_open]}{string_hashed}</p>"
+    return f"<p>{line[0:index_brackets_open]}{string_hashed}</p>\n"
 
 
 def remove_all_c(line):
@@ -51,6 +51,21 @@ def remove_all_c(line):
     string = string.strip()
     if "c" or "C" in string:
         return f"<p>{string.replace('c', '').replace('C', '')}</p>\n"
+
+
+def parsing_bold_syntaxe(line, flag):
+    """Parsing bold syntaxe"""
+    if flag == "*":
+        index_first_asterisk = line.index(flag)
+        index_third_asterisk = line.find(flag, index_first_asterisk + 2)
+        string = line[index_first_asterisk:index_third_asterisk + 2]
+
+        string = re.sub(r"[{*}]", "", string).strip()
+        if line[0] == "*":
+            return f"<p><b>{string}</b></p>"
+        else:
+            return f"<p>{line[0: index_first_asterisk]}<b>{string} \
+                </b>{line[index_third_asterisk + 2:]}</p>"
 
 
 def convert_md_to_html(markdown_file, html_file):
@@ -63,6 +78,8 @@ def convert_md_to_html(markdown_file, html_file):
                 line = remove_all_c(line)
             elif "[" in line:
                 line = convert_md5_lowercase(line)
+            elif "*" in line:
+                line = parsing_bold_syntaxe(line, "*")
             html.write(line)
 
 
