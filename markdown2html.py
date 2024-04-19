@@ -2,16 +2,17 @@
 """Script to convert a Markdown file to HTML
 """
 
-import sys
-import os.path
 import hashlib
+import os.path
+import re
+import sys
 
 
 def check():
     """Check number of arguments and if Markdown file exist"""
     if len(sys.argv) <= 2:
-        print('Usage: ./markdown2html.py README.md '
-              'README.html', file=sys.stderr)
+        print("Usage: ./markdown2html.py README.md " "README.html",
+              file=sys.stderr)
         return sys.exit(1)
 
     if os.path.isfile(sys.argv[1]) is False:
@@ -31,19 +32,26 @@ def parsing_headings(line):
     return line
 
 
-"""def convert_md5_lowercase(line):
-    if "[" and "]" in line:
-        remove_brackets = line.replace("[", "").replace("]", "")
-        string_hashed = hashlib.md5(remove_brackets.encode("utf-8")).hexdigest().lower()
-        
-        return f"<p>{string_hashed}</p>"""
+def convert_md5_lowercase(line):
+    """Convert in MD5 (lowercase) the content"""
+    index_brackets_open = line.index("[")
+    index_brackets_closed = line.index("]") + 2
+    substring = line[index_brackets_open:index_brackets_closed]
+
+    remove_brackets = substring.replace("[", "").replace("]", "")
+    string_hashed = hashlib.md5(remove_brackets.encode("utf-8"))
+    string_hashed = string_hashed.hexdigest().lower()
+
+    return f"<p>{line[0:index_brackets_open]}{string_hashed}</p>"
 
 
 def remove_all_c(line):
-    string = line.replace("(", "").replace(")", "")
+    """Remove all c(case insensitive) from the content"""
+    string = re.sub(r"[()]", "", line)
+    string = string.strip()
     if "c" or "C" in string:
-        return f"<p>{string.replace('c', '').replace('C', '')}</p>"
- 
+        return f"<p>{string.replace('c', '').replace('C', '')}</p>\n"
+
 
 def convert_md_to_html(markdown_file, html_file):
     """Convert Markdown to HTML"""
@@ -53,12 +61,15 @@ def convert_md_to_html(markdown_file, html_file):
                 line = parsing_headings(line)
             elif "(" in line:
                 line = remove_all_c(line)
+            elif "[" in line:
+                line = convert_md5_lowercase(line)
             html.write(line)
 
 
 def main():
     check()
     convert_md_to_html(sys.argv[1], sys.argv[2])
+
 
 if __name__ == "__main__":
     main()
