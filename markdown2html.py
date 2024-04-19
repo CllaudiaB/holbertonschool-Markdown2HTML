@@ -42,7 +42,7 @@ def convert_md5_lowercase(line):
     string_hashed = hashlib.md5(remove_brackets.encode("utf-8"))
     string_hashed = string_hashed.hexdigest().lower()
 
-    return f"<p>\n{line[0:index_brackets_open]}{string_hashed}\n</p>"
+    return f"<p>{line[0:index_brackets_open]}{string_hashed}</p>"
 
 
 def remove_all_c(line):
@@ -50,7 +50,7 @@ def remove_all_c(line):
     string = re.sub(r"[()]", "", line)
     string = string.strip()
     if "c" or "C" in string:
-        return f"<p>\n{string.replace('c', '').replace('C', '')}\n</p>\n"
+        return f"<p>{string.replace('c', '').replace('C', '')}</p>\n"
 
 
 def convert_md_to_html(markdown_file, html_file):
