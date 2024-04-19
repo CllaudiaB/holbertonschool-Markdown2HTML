@@ -11,8 +11,7 @@ import sys
 def check():
     """Check number of arguments and if Markdown file exist"""
     if len(sys.argv) <= 2:
-        print("Usage: ./markdown2html.py README.md " "README.html",
-              file=sys.stderr)
+        print("Usage: ./markdown2html.py README.md " "README.html", file=sys.stderr)
         return sys.exit(1)
 
     if os.path.isfile(sys.argv[1]) is False:
@@ -30,6 +29,13 @@ def parsing_headings(line):
 
         return f"<h{count_hashtag}>{remove_hashtag}</h{count_hashtag}>\n"
     return line
+
+
+def parsing_unordered_list(line):
+    """Parsing unordered list"""
+    string = line.lstrip("-").strip()
+
+    return f"<li>{string}</li>"
 
 
 def convert_md5_lowercase(line):
@@ -55,17 +61,21 @@ def remove_all_c(line):
 
 def parsing_bold_syntaxe(line, flag):
     """Parsing bold syntaxe"""
+    index_first_asterisk = line.index(flag)
+    index_third_asterisk = line.find(flag, index_first_asterisk + 2)
+    string = line[index_first_asterisk:index_third_asterisk + 2]
     if flag == "*":
-        index_first_asterisk = line.index(flag)
-        index_third_asterisk = line.find(flag, index_first_asterisk + 2)
-        string = line[index_first_asterisk:index_third_asterisk + 2]
-
-        string = re.sub(r"[{*}]", "", string).strip()
+        string = re.sub(r"[*]", "", string).strip()
         if line[0] == "*":
-            return f"<p><b>{string}</b></p>"
+            return f"<p><b>{string}</b></p>\n"
         else:
-            return f"<p>{line[0: index_first_asterisk]}<b>{string} \
-                </b>{line[index_third_asterisk + 2:]}</p>"
+            return f"<p>{line[0: index_first_asterisk]}<b>{string}</b>{line[index_third_asterisk + 2:]}</p>\n"
+    elif flag == "_":
+        string = re.sub(r"[_]", "", string).strip()
+        if line[0] == "_":
+            return f"<p><em>{string}</em></p>\n"
+        else:
+            return f"<p>{line[0: index_first_asterisk]}<em>{string}</em>{line[index_third_asterisk + 2:]}</p>\n"
 
 
 def convert_md_to_html(markdown_file, html_file):
@@ -74,12 +84,16 @@ def convert_md_to_html(markdown_file, html_file):
         for line in md:
             if "#" in line:
                 line = parsing_headings(line)
+            elif "-" in line:
+                line = f"<ul>{parsing_unordered_list(line)}"
             elif "(" in line:
                 line = remove_all_c(line)
             elif "[" in line:
                 line = convert_md5_lowercase(line)
             elif "*" in line:
                 line = parsing_bold_syntaxe(line, "*")
+            elif "_" in line:
+                line = parsing_bold_syntaxe(line, "_")
             html.write(line)
 
 
